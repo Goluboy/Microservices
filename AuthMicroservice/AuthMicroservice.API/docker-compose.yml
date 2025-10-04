@@ -1,0 +1,14 @@
+﻿services:
+  postgres:
+    image: postgres:latest
+    container_name: auth_postgres
+    environment:
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: authpassword
+      POSTGRES_DB: authdb
+    ports:
+      - "5430:5432"
+
+volumes:
+  pgdata:
+    driver: local
