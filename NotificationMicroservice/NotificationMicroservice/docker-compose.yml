@@ -1,0 +1,14 @@
+﻿services:
+  postgres:
+    image: postgres:latest
+    container_name: notification_postgres
+    environment:
+      POSTGRES_USER: notificationuser
+      POSTGRES_PASSWORD: notificationpassword
+      POSTGRES_DB: notificationdb
+    ports:
+      - "5431:5432"
+
+volumes:
+  pgdata:
+    driver: local
