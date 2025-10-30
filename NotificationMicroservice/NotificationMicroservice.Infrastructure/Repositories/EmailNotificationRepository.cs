@@ -19,7 +19,7 @@ public class EmailNotificationRepository : IEmailNotificationRepository
     public async Task<EmailNotification> CreateAsync(EmailNotification notification)
     {
         var entry = await _context.EmailNotifications.AddAsync(notification);
-
+        await _context.SaveChangesAsync();
         return entry.Entity;
     }
 
@@ -34,7 +34,7 @@ public class EmailNotificationRepository : IEmailNotificationRepository
     public async Task<EmailNotification> UpdateAsync(EmailNotification notification)
     {
         _context.EmailNotifications.Update(notification);
-
+        await _context.SaveChangesAsync();
         return notification;
     }
 
@@ -79,5 +79,6 @@ public class EmailNotificationRepository : IEmailNotificationRepository
     public async Task DeleteAsync(EmailNotification notification)
     {
         _context.EmailNotifications.Remove(notification);
+        await _context.SaveChangesAsync();
     }
 }

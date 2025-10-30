@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationMicroservice.API", "NotificationMicroservice.API.csproj", "{5B0350A3-62E1-4BA6-966B-48563C436E47}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationMicroservice.Infrastructure", "..\NotificationMicroservice.Infrastructure\NotificationMicroservice.Infrastructure.csproj", "{7E698BDF-1DDA-4E07-BD4E-ECE6DEA5B11A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationMicroservice.Application", "..\NotificationMicroservice.Application\NotificationMicroservice.Application.csproj", "{3E818FD0-B85B-44D3-AFC8-046F10C0444A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectionLib", "..\..\Libs\ConnectionLib\ConnectionLib.csproj", "{3BC9D319-86FF-3962-152D-79F38ED52E7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\..\Libs\Core\Core.csproj", "{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +39,21 @@ Global
 		{3E818FD0-B85B-44D3-AFC8-046F10C0444A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E818FD0-B85B-44D3-AFC8-046F10C0444A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E818FD0-B85B-44D3-AFC8-046F10C0444A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC9D319-86FF-3962-152D-79F38ED52E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BC9D319-86FF-3962-152D-79F38ED52E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BC9D319-86FF-3962-152D-79F38ED52E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BC9D319-86FF-3962-152D-79F38ED52E7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3BC9D319-86FF-3962-152D-79F38ED52E7A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E30252E3-8BD4-C75E-BAF1-6DDC8C4FC510} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F757804-8B17-436E-9639-83032B21EEF8}

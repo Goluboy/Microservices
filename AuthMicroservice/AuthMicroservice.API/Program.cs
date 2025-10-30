@@ -2,11 +2,18 @@ using AuthMicroservice.DAL;
 using AuthMicroservice.DAL.Models;
 using AuthMicroservice.Logic.Interfaces;
 using AuthMicroservice.Logic.Services;
+using ConnectionLib.ConnectionServices;
+using ConnectionLib.ConnectionServices.Interfaces;
+using Core.HttpLogic;
+using Core.Logs;
+using Core.TraceIdLogic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore; // Add this using directive
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Core.TraceLogic;
 
 namespace AuthMicroservice.API
 {
@@ -17,6 +24,12 @@ namespace AuthMicroservice.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Host.UseSerilog();
+
+            builder.Services.TryAddTraceId();
+            builder.Services.AddLoggerServices();
+            builder.Services.AddHttpRequestService();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -54,8 +67,8 @@ namespace AuthMicroservice.API
 
                 options.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -76,8 +89,12 @@ namespace AuthMicroservice.API
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddTransient<IJwtService, JwtService>();
+            builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddTransient<IProfileConnectionService, ProfileConnectionService>();
 
             var app = builder.Build();
+
+            app.UseMiddleware<TraceMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

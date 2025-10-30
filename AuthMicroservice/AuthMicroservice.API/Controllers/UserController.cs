@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Threading;
+using ConnectionLib.ConnectionServices.DtoModels.Email;
 
 namespace AuthMicroservice.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController(UserManager<UserDal> userManager, SignInManager<UserDal> signInManager, IJwtService jwtService) : ControllerBase
+    public class UserController(UserManager<UserDal> userManager, SignInManager<UserDal> signInManager, IJwtService jwtService, IEmailService emailService) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var users = await userManager.Users
                 .Where(u => !u.IsDeleted)
@@ -48,7 +50,9 @@ namespace AuthMicroservice.API.Controllers
                 UserName = request.Email,
                 Email = request.Email
             };
-           var result = await userManager.CreateAsync(user, request.Password);
+            var result = await userManager.CreateAsync(user, request.Password);
+
+            await emailService.SendEmailAsync(new EmailRequest(user.Email, "New account", "You successfully created account"));
 
             return Ok(result);
         }
@@ -85,6 +89,8 @@ namespace AuthMicroservice.API.Controllers
             }
 
             var token = await jwtService.GenerateAccessTokenAsync(user);
+
+            await emailService.SendEmailAsync(new EmailRequest(user.Email, "New login", "You successfully logged in"));
 
             return Ok(token);
         }
