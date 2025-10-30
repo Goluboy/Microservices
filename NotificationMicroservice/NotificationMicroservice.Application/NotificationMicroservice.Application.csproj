@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libs\ConnectionLib\ConnectionLib.csproj" />
+    <ProjectReference Include="..\..\Libs\Core\Core.csproj" />
     <ProjectReference Include="..\NotificationMicroservice.Domain\NotificationMicroservice.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dtos\" />
   </ItemGroup>
 
 </Project>

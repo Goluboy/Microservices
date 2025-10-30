@@ -1,4 +1,4 @@
-﻿using NotificationMicroservice.Application.Dtos;
+﻿using ConnectionLib.ConnectionServices.DtoModels.Email;
 
 namespace NotificationMicroservice.Application.Interfaces;
 

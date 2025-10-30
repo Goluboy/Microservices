@@ -18,6 +18,16 @@ namespace NotificationMicroservice
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddOpenApi(); 
             builder.Services.AddSwaggerGen(options =>
@@ -72,7 +82,9 @@ namespace NotificationMicroservice
             }
 
             app.UseHttpsRedirection();
-            
+
+            app.UseCors();
+
             app.MapControllers();
 
             app.Run();

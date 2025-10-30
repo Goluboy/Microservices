@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NotificationMicroservice.Application.Dtos;
+using ConnectionLib.ConnectionServices.DtoModels.Email;
 using NotificationMicroservice.Application.Interfaces;
 
 namespace NotificationMicroservice.API.Controllers
