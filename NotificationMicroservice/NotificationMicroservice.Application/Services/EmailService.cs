@@ -42,9 +42,9 @@ public class EmailService(
         {
             return new EmailResponse
             (
-                 emailId,
-                 false,
-                 "Email notification not found"
+                notification.Id, 
+                false, 
+                "Email notification not found"
             );
         }
 

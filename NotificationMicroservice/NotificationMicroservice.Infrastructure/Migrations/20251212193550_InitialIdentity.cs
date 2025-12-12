@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NotificationMicroservice.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitialIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace NotificationMicroservice.Infrastructure.Migrations
                 name: "EmailNotifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     To = table.Column<string>(type: "text", nullable: false),
                     Subject = table.Column<string>(type: "text", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: false),

@@ -1,3 +1,4 @@
+using AuthMicroservice.API.Messaging.Sagas;
 using AuthMicroservice.DAL;
 using AuthMicroservice.DAL.Models;
 using AuthMicroservice.Logic.Interfaces;
@@ -7,13 +8,14 @@ using ConnectionLib.ConnectionServices.Interfaces;
 using Core.HttpLogic;
 using Core.Logs;
 using Core.TraceIdLogic;
+using Core.TraceLogic;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; // Add this using directive
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Core.TraceLogic;
 
 namespace AuthMicroservice.API
 {
@@ -22,9 +24,7 @@ namespace AuthMicroservice.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
+            
             builder.Host.UseSerilog();
 
             builder.Services.TryAddTraceId();
@@ -91,6 +91,25 @@ namespace AuthMicroservice.API
             builder.Services.AddTransient<IJwtService, JwtService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddTransient<IProfileConnectionService, ProfileConnectionService>();
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.AddSagaStateMachine<CoordinatorStateMachine, CoordinatorState>()
+                    .InMemoryRepository();
+                x.AddSagaStateMachine<OrchestratorStateMachine, OrchestratorState>()
+                    .InMemoryRepository();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", x =>
+                    {
+                        x.Username("guest");
+                        x.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
 
             var app = builder.Build();
 

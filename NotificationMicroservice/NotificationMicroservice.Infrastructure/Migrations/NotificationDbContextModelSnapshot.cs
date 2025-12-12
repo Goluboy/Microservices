@@ -24,8 +24,9 @@ namespace NotificationMicroservice.Infrastructure.Migrations
 
             modelBuilder.Entity("NotificationMicroservice.Domain.Entities.EmailNotification", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Body")
                         .IsRequired()

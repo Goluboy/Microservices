@@ -2,7 +2,7 @@
 
 public class EmailNotification
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string To { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }

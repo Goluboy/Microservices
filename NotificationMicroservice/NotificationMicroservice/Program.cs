@@ -1,14 +1,15 @@
-
+using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using NotificationListener.Consumers;
+using NotificationMicroservice.API.Consumers;
 using NotificationMicroservice.Application.Interfaces;
 using NotificationMicroservice.Application.Services;
 using NotificationMicroservice.Domain.Interface;
 using NotificationMicroservice.Infrastructure;
 using NotificationMicroservice.Infrastructure.Repositories;
 using NotificationMicroservice.Infrastructure.Services;
-using AuthenticationMiddleware = Microsoft.AspNetCore.Authentication.AuthenticationMiddleware;
 
 namespace NotificationMicroservice
 {
@@ -67,6 +68,32 @@ namespace NotificationMicroservice
             builder.Services.AddTransient<IEmailNotificationRepository, EmailNotificationRepository>();
             builder.Services.AddDbContext<NotificationDbContext>((serviceProvider, options) =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.AddConsumer<RegisterUserRequestedConsumer>();
+                x.AddConsumer<LoginRequestedConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("rabbitmq://localhost", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    // Option A: explicit queues
+                    cfg.ReceiveEndpoint("auth.register.requested", e =>
+                    {
+                        e.ConfigureConsumer<RegisterUserRequestedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("auth.login.requested", e =>
+                    {
+                        e.ConfigureConsumer<LoginRequestedConsumer>(context);
+                    });
+                });
+            });
 
             var app = builder.Build();
 
