@@ -8,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Threading;
 using ConnectionLib.ConnectionServices.DtoModels.Email;
+using Core.Messaging.Contracts;
+using MassTransit;
 
 namespace AuthMicroservice.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController(UserManager<UserDal> userManager, SignInManager<UserDal> signInManager, IJwtService jwtService, IEmailService emailService) : ControllerBase
+    public class UserController(UserManager<UserDal> userManager, SignInManager<UserDal> signInManager, IJwtService jwtService, IEmailService emailService, IPublishEndpoint publishEndpoint) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -22,7 +24,7 @@ namespace AuthMicroservice.API.Controllers
                 .Where(u => !u.IsDeleted)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
 
             var usersWithRoles = new List<UsersWithRoles>();
@@ -52,7 +54,18 @@ namespace AuthMicroservice.API.Controllers
             };
             var result = await userManager.CreateAsync(user, request.Password);
 
-            await emailService.SendEmailAsync(new EmailRequest(user.Email, "New account", "You successfully created account"));
+            // publish a RegisterUserRequested message (saga entry)
+            var correlationId = Guid.NewGuid();
+            await publishEndpoint.Publish(new RegisterUserRequested
+            {
+                CorrelationId = correlationId,
+                UserId = user.Id,
+                Email = user.Email!,
+                Password = request.Password
+            });
+
+            // still send email (existing behavior)
+            //await emailService.SendEmailAsync(new EmailRequest(user.Email, "New account", "You successfully created account"));
 
             return Ok(result);
         }
@@ -90,7 +103,16 @@ namespace AuthMicroservice.API.Controllers
 
             var token = await jwtService.GenerateAccessTokenAsync(user);
 
-            await emailService.SendEmailAsync(new EmailRequest(user.Email, "New login", "You successfully logged in"));
+            // publish a LoginRequested message (saga entry)
+            var correlationId = Guid.NewGuid();
+            await publishEndpoint.Publish(new LoginRequested
+            {
+                CorrelationId = correlationId,
+                Email = user.Email!,
+                Password = loginRequest.Password
+            });
+
+            //await emailService.SendEmailAsync(new EmailRequest(user.Email, "New login", "You successfully logged in"));
 
             return Ok(token);
         }

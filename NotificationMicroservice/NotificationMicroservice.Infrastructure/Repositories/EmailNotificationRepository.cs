@@ -26,7 +26,7 @@ public class EmailNotificationRepository : IEmailNotificationRepository
     public async Task<EmailNotification?> GetByIdAsync(string id)
     {
         var notification = await _context.EmailNotifications
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FirstOrDefaultAsync(e => e.Id.ToString() == id);
 
         return notification;
     }

@@ -13,7 +13,7 @@ public class EmailService(IProfileConnectionService connectionService) : IEmailS
     /// <inheritdoc />
     public async Task<bool> SendEmailAsync(EmailRequest emailRequest)
     {
-        var response =  await connectionService.SendEmailAsync(emailRequest);
+        var response = await connectionService.SendEmailAsync(emailRequest);
         return response.Success;
     }
 }
