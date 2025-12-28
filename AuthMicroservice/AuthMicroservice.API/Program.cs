@@ -6,16 +6,19 @@ using AuthMicroservice.Logic.Services;
 using ConnectionLib.ConnectionServices;
 using ConnectionLib.ConnectionServices.Interfaces;
 using Core.HttpLogic;
-using Core.Logs;
+using Core.RedisDestributesSemaphore;
 using Core.TraceIdLogic;
 using Core.TraceLogic;
 using MassTransit;
+using Medallion.Threading;
+using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using StackExchange.Redis;
 
 namespace AuthMicroservice.API
 {
@@ -28,7 +31,6 @@ namespace AuthMicroservice.API
             builder.Host.UseSerilog();
 
             builder.Services.TryAddTraceId();
-            builder.Services.AddLoggerServices();
             builder.Services.AddHttpRequestService();
 
             builder.Services.AddControllers();
@@ -91,6 +93,8 @@ namespace AuthMicroservice.API
             builder.Services.AddTransient<IJwtService, JwtService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddTransient<IProfileConnectionService, ProfileConnectionService>();
+
+            builder.Services.AddRedisDistributedSemaphore();
 
             builder.Services.AddMassTransit(x =>
             {

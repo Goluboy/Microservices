@@ -4,9 +4,9 @@ using MassTransit;
 namespace AuthMicroservice.API.Messaging.Sagas;
 public class CoordinatorStateMachine : MassTransitStateMachine<CoordinatorState>
 {
-    public State LoggedIn { get; private set; }
+    public State? LoggedIn { get; private set; }
 
-    public Event<LoginRequested> LoginRequested { get; private set; }
+    public Event<LoginRequested>? LoginRequested { get; private set; }
 
     public CoordinatorStateMachine()
     {
