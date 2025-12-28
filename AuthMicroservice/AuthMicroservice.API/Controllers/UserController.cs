@@ -15,7 +15,11 @@ namespace AuthMicroservice.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController(UserManager<UserDal> userManager, SignInManager<UserDal> signInManager, IJwtService jwtService, IEmailService emailService, IPublishEndpoint publishEndpoint) : ControllerBase
+    public class UserController(UserManager<UserDal> userManager, 
+        SignInManager<UserDal> signInManager, 
+        IJwtService jwtService, 
+        IEmailService emailService, 
+        IPublishEndpoint publishEndpoint) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -64,7 +68,6 @@ namespace AuthMicroservice.API.Controllers
                 Password = request.Password
             });
 
-            // still send email (existing behavior)
             //await emailService.SendEmailAsync(new EmailRequest(user.Email, "New account", "You successfully created account"));
 
             return Ok(result);

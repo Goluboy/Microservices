@@ -1,4 +1,7 @@
+using Core.RedisDestributesSemaphore;
 using MassTransit;
+using Medallion.Threading;
+using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -9,7 +12,7 @@ using NotificationMicroservice.Application.Services;
 using NotificationMicroservice.Domain.Interface;
 using NotificationMicroservice.Infrastructure;
 using NotificationMicroservice.Infrastructure.Repositories;
-using NotificationMicroservice.Infrastructure.Services;
+using StackExchange.Redis;
 
 namespace NotificationMicroservice
 {
@@ -68,6 +71,8 @@ namespace NotificationMicroservice
             builder.Services.AddTransient<IEmailNotificationRepository, EmailNotificationRepository>();
             builder.Services.AddDbContext<NotificationDbContext>((serviceProvider, options) =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddRedisDistributedSemaphore();
 
             builder.Services.AddMassTransit(x =>
             {

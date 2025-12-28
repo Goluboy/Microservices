@@ -1,4 +1,6 @@
-﻿using ConnectionLib.ConnectionServices.DtoModels.Email;
+﻿using System.Threading;
+using ConnectionLib.ConnectionServices.DtoModels.Email;
+using Medallion.Threading;
 using NotificationMicroservice.Application.Interfaces;
 using NotificationMicroservice.Domain.Entities;
 using NotificationMicroservice.Domain.Interface;
@@ -7,10 +9,14 @@ namespace NotificationMicroservice.Application.Services;
 
 public class EmailService(
     IEmailSender emailSender,
-    IEmailNotificationRepository repository) : IEmailService
+    IEmailNotificationRepository repository,
+    IDistributedSemaphore _semaphore) : IEmailService
 {
     public async Task<EmailResponse> SendEmailAsync(EmailRequest emailDto)
     {
+        await using var handle = await _semaphore.AcquireAsync(
+            TimeSpan.FromSeconds(10));
+
         var notification = new EmailNotification
         {
             To = emailDto.To,

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AuthMicroservice.Logic.Services;
 
-public class JwtService(UserManager<UserDal> userManager) : IJwtService
+public class JwtService(UserManager<UserDal> userManager, IDistributedSemaphore _semaphore) : IJwtService
 {
     public const string ISSUER = "MyAuthServer";
     public const string AUDIENCE = "MyAuthClient";
@@ -19,6 +19,9 @@ public class JwtService(UserManager<UserDal> userManager) : IJwtService
 
     public async Task<string> GenerateAccessTokenAsync(UserDal user)
     {
+        await using var handle = await _semaphore.AcquireAsync(
+            TimeSpan.FromSeconds(10));
+
         var roles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
@@ -53,7 +56,8 @@ public class JwtService(UserManager<UserDal> userManager) : IJwtService
     }
 
     public (bool, string) ValidateTokenAsync(string accessToken)
-    {
+    {     
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var validationParameters = new TokenValidationParameters
         {

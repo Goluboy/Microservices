@@ -7,8 +7,8 @@ public class OrchestratorStateMachine : MassTransitStateMachine<OrchestratorStat
 {
     public State WaitingForRegistration { get; private set; }
 
-    public Event<RegisterUserRequested> RegisterRequested { get; private set; }
-    public Event<RegisterUserCompleted> RegisterCompleted { get; private set; }
+    public Event<RegisterUserRequested>? RegisterRequested { get; private set; }
+    public Event<RegisterUserCompleted>? RegisterCompleted { get; private set; }
 
     public OrchestratorStateMachine()
     {
